@@ -1,5 +1,6 @@
 package com.dto;
 
+import java.util.Collection;
 import java.util.Date;
 
 import org.hibernate.Session;
@@ -22,9 +23,21 @@ public class HibernateTest {
 		Session session = sessionFactory.openSession();
 		
 		session.beginTransaction();
-		session.save(user);
+		//session.save(user);
 		session.getTransaction().commit();
 		session.close();
+		
+		user=null;
+		session = sessionFactory.openSession();
+		user=session.get(UserDetails.class, 1);
+		session.close();
+		
+		
+		
+		for(Address a : user.getListOfAddresses()) {
+			System.out.println(a);
+		}
+		
 	}
 
 }

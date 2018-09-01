@@ -1,6 +1,5 @@
 package com.dto;
 
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
@@ -53,6 +52,13 @@ public class Address {
 	}
 	public void setPincode(String pincode) {
 		this.pincode = pincode;
+	}
+
+
+
+	@Override
+	public String toString() {
+		return "Address [street=" + street + ", city=" + city + ", state=" + state + ", pincode=" + pincode + "]";
 	}
 	
 	

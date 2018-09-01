@@ -22,7 +22,7 @@
 		<property name="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</property>
 
 		<!-- Drop and Re-create the DB schema on startup -->
-		<property name="hibernate.hbm2ddl.auto">create</property>
+		<property name="hibernate.hbm2ddl.auto">update</property>
 		
 		<!-- Retains Table and changes only when requested -->
 		<!-- <property name="hibernate.hbm2ddl.auto">update</property> -->

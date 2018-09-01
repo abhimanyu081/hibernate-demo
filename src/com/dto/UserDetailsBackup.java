@@ -1,24 +1,21 @@
 package com.dto;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
-import javax.persistence.ElementCollection;
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.Lob;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-@Entity(name = "USER_DETAILS")
-public class UserDetails {
-	
-
+@Entity(name = "USER_DETAILS") //
+public class UserDetailsBackup {
 
 	@Id // primary key of the object
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -30,10 +27,21 @@ public class UserDetails {
 
 	@Temporal(TemporalType.TIME)
 	private Date joinedDate;
+
+	@Embedded
+	private Address homeAddress;
+
+	@Embedded
+	@AttributeOverrides({
+		
+		@AttributeOverride(name = "street", column = @Column(name = "home_street")),
+		@AttributeOverride(name = "city", column = @Column(name = "home_city")),
+		@AttributeOverride(name = "state", column = @Column(name = "home_state")),
+		@AttributeOverride(name = "pincode", column = @Column(name = "home_pincode")),
 	
-	@ElementCollection
-	@JoinTable(name="USER_ADDRESS", joinColumns=@JoinColumn(name = "USER_ID"))
-	private Set<Address> listOfAddresses = new HashSet<>();
+	})
+	// modify defssult behaviour
+	private Address officeAddress;
 
 	public String getDescription() {
 		return description;
@@ -49,6 +57,24 @@ public class UserDetails {
 
 	public void setJoinedDate(Date joinedDate) {
 		this.joinedDate = joinedDate;
+	}
+
+
+
+	public Address getHomeAddress() {
+		return homeAddress;
+	}
+
+	public void setHomeAddress(Address homeAddress) {
+		this.homeAddress = homeAddress;
+	}
+
+	public Address getOfficeAddress() {
+		return officeAddress;
+	}
+
+	public void setOfficeAddress(Address officeAddress) {
+		this.officeAddress = officeAddress;
 	}
 
 	public Integer getUserId() {
@@ -67,16 +93,6 @@ public class UserDetails {
 		this.name = name;
 	}
 
-	public Set<Address> getListOfAddresses() {
-		return listOfAddresses;
-	}
-
-	public void setListOfAddresses(Set<Address> listOfAddresses) {
-		this.listOfAddresses = listOfAddresses;
-	}
-
-
-
-
+	
 
 }

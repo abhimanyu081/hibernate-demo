@@ -29,5 +29,6 @@
 
 		<!-- Names the annotated entity class -->
 		<mapping class="com.dto.UserDetails" />
+		<mapping class="com.dto.Vehicle" />
 	</session-factory>
 </hibernate-configuration>

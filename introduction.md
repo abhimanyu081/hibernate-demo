@@ -86,26 +86,26 @@ Example hibernate.cfg.xml file for MYSQL.
         "http://hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 
 <hibernate-configuration>
-	<session-factory>
-		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/Book</property>
-		<property name="hibernate.connection.username">root</property>
-		<property name="hibernate.connection.password">mysql</property>
-		<property name="hibernate.connection.pool_size">1</property>
-		<property name="hibernate.current_session_context_class">thread</property>
-		<property name="hibernate.show_sql">true</property>
+<session-factory>
+<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/Book</property>
+<property name="hibernate.connection.username">root</property>
+<property name="hibernate.connection.password">mysql</property>
+<property name="hibernate.connection.pool_size">1</property>
+<property name="hibernate.current_session_context_class">thread</property>
+<property name="hibernate.show_sql">true</property>
 
-		<!-- SQL Dialect. The language hibernate uses to communicate with DB. Although 
-			most DB use SQL to communicate but different DBs have different ways of doing 
-			things. e.g -->
-		<property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+<!-- SQL Dialect. The language hibernate uses to communicate with DB. Although 
+most DB use SQL to communicate but different DBs have different ways of doing 
+things. e.g -->
+<property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
 
-		<!-- Drop and Re-create the DB schema on startup -->
-		<property name="hbm2ddl.auto">create</property>
+<!-- Drop and Re-create the DB schema on startup -->
+<property name="hbm2ddl.auto">create</property>
 
-		<!-- Names the annotated entity class -->
-		<mapping resource="book.hbm.xml" />
-	</session-factory>
+<!-- Names the annotated entity class -->
+<mapping resource="book.hbm.xml" />
+</session-factory>
 </hibernate-configuration>
 ```
 
@@ -257,11 +257,11 @@ If we are using a complex Embedded Object(set of fields acting as primary key) a
 # Saving Collections (Vid -10)
 @ElementCollection  is used to save a collections.
 
-		@ElementCollection
-		private Set<Address> listOfAddresses = new HashSet<>();
-		
-		@Embeddable
-		public class Address {}
+@ElementCollection
+private Set<Address> listOfAddresses = new HashSet<>();
+
+@Embeddable
+public class Address {}
 
 
 When we save the collections HB creates another table to save the Collections with a foreign key. 
@@ -316,5 +316,135 @@ user.getListOfAddresses() will throw LazyInitialization Exception if session was
 
 **@ElementCollection(fetch=FetchType.EAGER)** loads data eagerly.
 
+# One To One Mapping(vid-13)
 
+```java
+@OneToOne
+@JoinColumn(name="VEHICLE_ID")
+private Vehicle vehicle;
 
+```
+
+```java
+@Entity
+public class Vehicle {
+   @Id
+   @GeneratedValue
+   private int vehicleId;
+   private String vehicleName;
+}
+```
+
+When we put @oneToOne annotations on Vehicle HB creates a column for vehicle_id in UserDetails Table.
+
+USER_ID | USER_NAME | VEHICLE _ID
+---------|----------|---------
+ 1001 | user1 | 2
+ 1002 | user2 | 3
+ 1003 | user3 | 4
+
+VEHICLE_ID | VEHICLE_NAME
+---------|----------
+ 1 | Car
+
+ In this case HB executes following queries.
+
+```sql
+insert into USER_DETAILS (userName, VEHICLE_ID, userId) values (?, ?, ?)
+insert into Vehicle (vehicleName, vehicleId) values (?, ?)
+update USER_DETAILS set userName=?, VEHICLE_ID=? where userId=?
+```
+
+1. Insert User row without vehicle Id.
+2. Insert Vehicle and generate vehicle Id.
+3. Update User table with vehicle_id.
+
+# One To Many Mapping(14)
+
+When we use @OneToMany annnotations instead of creating a join column, HB creates a mapping table of userId --> Vehicle_Id.
+
+```java
+@OneToMany
+@JoinTable(
+   name="USER_VEHICLE_MAPPING",
+   joinColumns=@JoinColumn(name="USER_ID"),
+   inverseJoinColumns=@JoinColumn(name="VEHICLE_ID")
+)
+private Collection<Vehicle> vehicle = new ArrayList<>();
+```
+
+HB executes following set of queries for the @OneToMany save object.
+
+```sql
+insert into USER_DETAILS (USER_NAME, USER_ID) values (?, ?)
+insert into VEHICLE (VEHICLE_NAME, VEHICLE_ID) values (?, ?)
+insert into VEHICLE (VEHICLE_NAME, VEHICLE_ID) values (?, ?)
+insert into USER_VEHICLE_MAPPING (USER_ID, VEHICLE_ID) values (?, ?)
+insert into USER_VEHICLE_MAPPING (USER_ID, VEHICLE_ID) values (?, ?)
+```
+
+Tables after this user object Insetion.
+
+USER_DETAILS
+
+USER_ID | USER_NAME
+---------|---------
+ 1 | USER1
+
+VEHICLE
+
+VEHICLE_ID | VEHICLE_NAME
+---------|----------
+ 2 | Audi
+ 3 | BMW
+ 4 | FERRARI
+
+USER_VEHICLE_MAPPING
+
+USER_ID | VEHICLE_ID
+---------|----------
+ 1 | Audi
+ 1 | BMW
+ 1 | FERRARI
+
+## @JoinTable
+
+* JoinColumns - Column name for current Entity e.g USER_ID of USER_DETAILS in USER_VEHICLE_MAPPING
+* inverseJoinColumns - Column name for the embedded object e.g VEHICLE_ID of Vehicle in USER_VEHICLE_MAPPING
+
+## Reverse Relatioship
+
+When we use @OneToMany relatioship in an Entity, we can have a reverse relatioship (i.e @ManyToOne) in the Embedded object so that we can get the owner of the Embedded object when we need it. e.g In Vehicle we have reverse relatioship of UserDetails table so that we can get the owner of the vehicle.
+
+```java
+@Entity(name = "USER_DETAILS")
+public class UserDetails {
+     @OneToMany
+     @JoinTable(
+        name="USER_VEHICLE_MAPPING",
+        joinColumns=@JoinColumn(name="USER_ID"), 
+        inverseJoinColumns=@JoinColumn(name="VEHICLE_ID")
+)
+private Collection<Vehicle> vehicle = new ArrayList<>();
+
+}
+```
+
+```java
+@Entity
+@Table(name="VEHICLE")
+public class Vehicle {
+
+ @Id
+ @GeneratedValue
+ @Column(name="VEHICLE_ID")
+ private int vehicleId;
+
+ @Column(name="VEHICLE_NAME")
+ private String vehicleName;
+
+ @ManyToOne
+ private UserDetails user;
+
+}
+```

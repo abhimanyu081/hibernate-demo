@@ -1,8 +1,5 @@
 package com.dto;
 
-import java.util.Collection;
-import java.util.Date;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -10,34 +7,33 @@ import org.hibernate.cfg.Configuration;
 public class HibernateTest {
 
 	public static void main(String[] args) {
-		
+
 		UserDetails user = new UserDetails();
-		user.setName("user Name");
-		user.setJoinedDate(new Date());
-		user.getListOfAddresses().add(new Address("st1", "Noida14", "UP", "201310"));
-		
-		user.getListOfAddresses().add(new Address("D148", "GZB", "UP", "201310"));
-		
-		
-		SessionFactory sessionFactory=new Configuration().configure().buildSessionFactory();
+		user.setUserName("Kumar");
+
+		Vehicle car1 = new Vehicle("jeep");
+		Vehicle car2 = new Vehicle("maruti");
+
+		user.getVehicle().add(car1);
+		user.getVehicle().add(car2);
+
+		car1.setUser(user);
+		car2.setUser(user);
+
+		SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
 		Session session = sessionFactory.openSession();
-		
+
 		session.beginTransaction();
-		//session.save(user);
+	/*	session.save(user);
+		session.save(car1);
+		session.save(car2);*/
 		session.getTransaction().commit();
 		session.close();
 		
-		user=null;
 		session = sessionFactory.openSession();
-		user=session.get(UserDetails.class, 1);
-		session.close();
-		
-		
-		
-		for(Address a : user.getListOfAddresses()) {
-			System.out.println(a);
-		}
-		
+		UserDetails v =	session.get(UserDetails.class, 4);
+		System.out.println(v.getVehicle());
+
 	}
 
 }

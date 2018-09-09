@@ -1,4 +1,4 @@
-# Inheritance Implementation
+# Inheritance Implementation Least Normalized
 
 Why do we need to map the inheritance since the parent and child class are seperate entities and could be saved seperately?
 
@@ -58,3 +58,31 @@ public class TwoWheeler extends Vehicle{
 
 }
 ```
+
+## Table per class strategy(Slightly Normalized)
+
+* separate class for each class no matter the level if inheritance.
+* No need for discriminator
+* HB creates parent member variables also in child class table.
+* @Id @GeneratedValue is also inherited to child classes.
+* Parent column repeated in every child class.
+
+## Joined Inheritance strategy
+
+* Parent class Tab;e contains data for all inherited parent class columns.
+* Child class tables contain data only specific to the child classes and one mapping column.
+* To Fetch details for on object we will have to make a join on both Parent and child classs tables.
+  
+ vehicleId | VEHICLE_TYPE | vehicleName
+---------|----------|---------
+ 1 | Vehicle | Car
+ 2 | Car | Porsche
+ 3 | Bike | Hero
+
+---------------
+
+vehicleId | steeringHandle
+---------|----------
+ 3 | Bike steeringHandle
+
+(vehicleId=3 from parent class Vehicle)

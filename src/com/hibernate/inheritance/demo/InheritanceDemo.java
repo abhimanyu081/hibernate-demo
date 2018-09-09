@@ -13,9 +13,11 @@ public class InheritanceDemo {
 		v.setVehicleName("Car");
 
 		TwoWheeler tw = new TwoWheeler();
+		tw.setVehicleName("Bike");
 		tw.setSteeringHandle("Bike steering handle");
 		
 		FourWheeler fw = new FourWheeler();
+		fw.setVehicleName("Car");
 		fw.setSteeringHandle("Porsche steering handle");
 		
 

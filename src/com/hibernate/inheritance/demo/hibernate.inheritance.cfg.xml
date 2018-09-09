@@ -24,21 +24,9 @@
 		<!-- Drop and Re-create the DB schema on startup -->
 		<property name="hibernate.hbm2ddl.auto">create</property>
 		
-		<!-- Retains Table and changes only when requested -->
-		<!-- <property name="hibernate.hbm2ddl.auto">update</property> -->
-
-		<!-- Names the annotated entity class -->
-		<!-- <mapping class="com.dto.RentedVehicle" /> -->
-<!-- 		<mapping  class="com.model.onetoone.Platform" />
-		<mapping class="com.model.onetoone.Page" /> -->
-		
-		<!-- <mapping  class="com.model.onetomany.Platform" />
-		<mapping class="com.model.onetomany.Page" /> -->
-	<!-- 	<mapping class="com.dto.UserDetails" />
-		<mapping class="com.dto.Vehicle" /> -->
-		
-		<mapping  class="com.model.onetomany.reverse.Platform" />
-		<mapping class="com.model.onetomany.reverse.Page" />
+		<mapping  class="com.hibernate.inheritance.demo.Vehicle" />
+		<mapping  class="com.hibernate.inheritance.demo.TwoWheeler" />
+		<mapping  class="com.hibernate.inheritance.demo.FourWheeler" />
 
 	</session-factory>
 </hibernate-configuration>

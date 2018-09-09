@@ -8,9 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 
 @Entity(name = "USER_DETAILS")
 public class UserDetails {
@@ -24,35 +22,36 @@ public class UserDetails {
 	@Column(name="USER_NAME")
 	private String userName;
 	
-	@OneToMany
-	@JoinTable(
-			name="USER_VEHICLE_MAPPING",
-			joinColumns=@JoinColumn(name="USER_ID"), 
-			inverseJoinColumns=@JoinColumn(name="VEHICLE_ID")
-	)
-	private Collection<Vehicle> vehicle = new ArrayList<>();
-	
+	@ManyToMany(mappedBy="userList")
+	private Collection<RentedVehicle> vehiclesList = new ArrayList<>();
 
-
-	public Collection<Vehicle> getVehicle() {
-		return vehicle;
-	}
-	public void setVehicle(Collection<Vehicle> vehicle) {
-		this.vehicle = vehicle;
-	}
 	public Integer getUserId() {
 		return userId;
 	}
+
 	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
+
 	public String getUserName() {
 		return userName;
 	}
+
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
+
+	public Collection<RentedVehicle> getVehiclesList() {
+		return vehiclesList;
+	}
+
+	public void setVehiclesList(Collection<RentedVehicle> vehiclesList) {
+		this.vehiclesList = vehiclesList;
+	}
 	
+
+
+
 	
 
 }

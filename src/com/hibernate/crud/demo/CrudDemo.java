@@ -1,5 +1,8 @@
 package com.hibernate.crud.demo;
 
+
+
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -36,6 +39,13 @@ public class CrudDemo {
 		user9.setName("UpdatedUser");
 		System.out.println("Updating User");
 		updateUser(user9);
+		
+		Session session = sessionFactory.openSession();
+		session.beginTransaction();
+		
+		Query query = session.createNamedQuery("UserDetailsByID");
+		query.setParameter(0, 2);
+		
 		
 	}
 	

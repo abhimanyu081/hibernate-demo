@@ -37,6 +37,9 @@
 	<!-- 	<mapping class="com.dto.UserDetails" />
 		<mapping class="com.dto.Vehicle" /> -->
 		
+		<property name="cahce.provider_class">org.hibernate.cache.EhCacheProvider</property>
+		<property name="cache.use_second_level">true</property>
+		
 		<mapping  class="com.model.onetomany.reverse.Platform" />
 		<mapping class="com.model.onetomany.reverse.Page" />
 

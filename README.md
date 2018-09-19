@@ -1,1 +1,1 @@
-* [Introduction](other_file.md)
+* [Introduction](introduction.md)
